@@ -113,7 +113,7 @@ public class HuffmanEncoderBinary {
 
     public void decompressFileFromBinary(String compressedFilePath, String outputFilePath) throws IOException {
         try (DataInputStream dataIn = new DataInputStream(new FileInputStream(compressedFilePath));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
+             BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(outputFilePath))) {
 
             // Lê o tamanho do mapeamento de Huffman
             int mapSize = dataIn.readInt();
@@ -125,34 +125,30 @@ public class HuffmanEncoderBinary {
                 reverseHuffmanCodeMap.put(code, character);
             }
 
-            // Lê o número de bits compactados e os processa em blocos
+            // Usa um buffer para processar grandes blocos de bits de uma só vez
+            StringBuilder tempCode = new StringBuilder();  // Buffer temporário para guardar o código de bits
+            byte[] buffer = new byte[8192];  // Buffer grande para leitura de blocos de bytes
+
+            // Lê o corpo do arquivo em blocos de bytes maiores para processar mais rapidamente
             while (dataIn.available() > 0) {
-                int bitLength = dataIn.readInt();
-                int byteLength = dataIn.readInt();
+                int bitLength = dataIn.readInt();  // Lê o número de bits
+                int byteLength = dataIn.readInt(); // Lê o número de bytes
 
-                byte[] bytes = new byte[byteLength];
-                dataIn.readFully(bytes); // Lê os dados compactados
+                byte[] bytes = new byte[byteLength];  // Buffer de bytes compactados
+                dataIn.readFully(bytes);  // Lê os bytes compactados
 
-                // Converte os bytes para uma string de bits (0s e 1s)
-                BitSet bitSet = BitSet.valueOf(bytes);
-                StringBuilder encodedText = new StringBuilder();
+                BitSet bitSet = BitSet.valueOf(bytes);  // Converte os bytes para um BitSet
+
+                // Decodificar diretamente dos bits
                 for (int i = 0; i < bitLength; i++) {
-                    encodedText.append(bitSet.get(i) ? '1' : '0');
-                }
+                    tempCode.append(bitSet.get(i) ? '1' : '0');
 
-                // Decodifica o texto em blocos usando o mapeamento de Huffman
-                StringBuilder decodedText = new StringBuilder();
-                StringBuilder tempCode = new StringBuilder();
-                for (char bit : encodedText.toString().toCharArray()) {
-                    tempCode.append(bit);
+                    // Verificar se o código atual corresponde a um caractere no mapa de Huffman
                     if (reverseHuffmanCodeMap.containsKey(tempCode.toString())) {
-                        decodedText.append(reverseHuffmanCodeMap.get(tempCode.toString()));
-                        tempCode.setLength(0);
+                        writer.write(reverseHuffmanCodeMap.get(tempCode.toString()));
+                        tempCode.setLength(0);  // Limpa o código temporário para o próximo caractere
                     }
                 }
-
-                // Escreve o bloco decodificado no arquivo de saída
-                writer.write(decodedText.toString());
             }
         }
     }
