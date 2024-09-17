@@ -173,5 +173,4 @@ public class HuffmanEncoderBinary {
         return new int[]{lineCount, charCount};
     }
 
-
 }
