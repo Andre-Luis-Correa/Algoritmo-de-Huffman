@@ -32,3 +32,5 @@ bin/
 50mb.txt
 100mb.txt
 200mb.txt
+decompressed.txt
+compressed.bin

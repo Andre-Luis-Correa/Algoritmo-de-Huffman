@@ -160,7 +160,7 @@ public class HuffmanEncoderBinary {
         }
     }
 
-    public static int[] contarLinhasECaracteresArquivo(String filePath) throws IOException {
+    public static int[] countLinesAndCharactersInFile(String filePath) throws IOException {
         int lineCount = 0;
         int charCount = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
