@@ -8,9 +8,10 @@ public class HuffmanEncoderChar {
 
     // Compressão por caractere
     public void compressFileToBinaryByChar(String inputFilePath, String outputFilePath) throws IOException {
+        long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
         Map<Character, Integer> frequencyMapChar = new HashMap<>();
 
-        // Ler o arquivo com codificação UTF-8
+        // Ler o arquivo com codificação UTF-8 e calcular a frequência de cada caractere
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFilePath), "UTF-8"))) {
             int character;
             while ((character = reader.read()) != -1) {
@@ -22,7 +23,7 @@ public class HuffmanEncoderChar {
         HuffmanNode rootChar = buildHuffmanTreeChar(frequencyMapChar);
         buildHuffmanCodeChar(rootChar, "");
 
-        // Escrever o arquivo compactado binário
+        // Escrever o arquivo compactado binário em partes menores
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFilePath), "UTF-8"));
              DataOutputStream dataOut = new DataOutputStream(new FileOutputStream(outputFilePath))) {
 
@@ -33,19 +34,28 @@ public class HuffmanEncoderChar {
                 dataOut.writeUTF(entry.getValue());
             }
 
-            // Substituir os caracteres pelos códigos de Huffman
+            // Processar e gravar o arquivo em blocos menores
+            char[] buffer = new char[8192];  // Buffer de 8 KB
+            int charsRead;
             StringBuilder encodedText = new StringBuilder();
-            int character;
-            while ((character = reader.read()) != -1) {
-                encodedText.append(huffmanCodeMapChar.get((char) character));
-            }
 
-            writeBits(dataOut, encodedText);
+            while ((charsRead = reader.read(buffer)) != -1) {
+                for (int i = 0; i < charsRead; i++) {
+                    encodedText.append(huffmanCodeMapChar.get(buffer[i]));
+                }
+
+                // Gravar os bits codificados no arquivo
+                writeBits(dataOut, encodedText);
+                encodedText.setLength(0);  // Limpar o buffer
+            }
         }
+        long endTime = System.currentTimeMillis();  // Finalizar medição de tempo
+        System.out.println("Tempo gasto na compressão por caractere: " + (endTime - startTime) + " ms");
     }
 
     // Descompressão por caractere
     public void decompressFileFromBinaryByChar(String compressedFilePath, String outputFilePath) throws IOException {
+        long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
         try (DataInputStream dataIn = new DataInputStream(new FileInputStream(compressedFilePath));
              OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFilePath), "UTF-8")) {
 
@@ -78,6 +88,8 @@ public class HuffmanEncoderChar {
                 }
             }
         }
+        long endTime = System.currentTimeMillis();  // Finalizar medição de tempo
+        System.out.println("Tempo gasto na descompressão por caractere: " + (endTime - startTime) + " ms");
     }
 
     // Construir a árvore de Huffman por caractere

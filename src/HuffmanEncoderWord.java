@@ -8,6 +8,8 @@ public class HuffmanEncoderWord {
 
     // Compressão por palavra
     public void compressFileToBinaryByWord(String inputFilePath, String outputFilePath) throws IOException {
+        long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
+
         Map<String, Integer> frequencyMapWord = new HashMap<>();
 
         // Etapa 1: Contar frequência de cada palavra, preservando espaços e quebras de linha
@@ -78,9 +80,14 @@ public class HuffmanEncoderWord {
 
             writeBits(dataOut, encodedText);
         }
+
+        long endTime = System.currentTimeMillis();  // Finalizar medição de tempo
+        System.out.println("Tempo gasto na compressão por palavra: " + (endTime - startTime) + " ms");
     }
 
     public void decompressFileFromBinaryByWord(String compressedFilePath, String outputFilePath) throws IOException {
+        long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
+
         try (DataInputStream dataIn = new DataInputStream(new FileInputStream(compressedFilePath));
              OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFilePath), "UTF-8")) {
 
@@ -114,6 +121,9 @@ public class HuffmanEncoderWord {
                 }
             }
         }
+
+        long endTime = System.currentTimeMillis();  // Finalizar medição de tempo
+        System.out.println("Tempo gasto na descompressão por palavra: " + (endTime - startTime) + " ms");
     }
 
     // Construir a árvore de Huffman por palavra
