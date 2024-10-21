@@ -1,7 +1,7 @@
 class HuffmanNode {
-    String word;     // Para compressão por palavra
-    char character;  // Para compressão por caractere
-    int frequency;   // Frequência do caractere ou palavra
+    String word;
+    char character;
+    int frequency;
     HuffmanNode left;
     HuffmanNode right;
 

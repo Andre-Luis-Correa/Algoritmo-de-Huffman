@@ -6,7 +6,11 @@ public class HuffmanEncoderWord {
     private Map<String, String> huffmanCodeMapWord = new HashMap<>();
     private Map<String, String> reverseHuffmanCodeMapWord = new HashMap<>();
 
-    // Compressão por palavra
+    /**
+     * Descrição: Comprime um arquivo de texto, substituindo as palavras e separadores por seus códigos de Huffman, e salva o resultado em um arquivo binário.
+     * Pré-condições: O arquivo de entrada deve existir e ser um arquivo de texto legível.
+     * Pós-condições: Um arquivo binário compactado será gerado com a codificação de Huffman por palavra.
+     */
     public void compressFileToBinaryByWord(String inputFilePath, String outputFilePath) throws IOException {
         long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
 
@@ -85,6 +89,11 @@ public class HuffmanEncoderWord {
         System.out.println("Tempo gasto na compressão por palavra: " + (endTime - startTime) + " ms");
     }
 
+    /**
+     * Descrição: Descomprime um arquivo binário previamente compactado por palavras usando a codificação de Huffman e restaura o texto original.
+     * Pré-condições: O arquivo compactado deve existir e ter sido gerado utilizando a compressão por palavra.
+     * Pós-condições: Um arquivo de texto descompactado será gerado.
+     */
     public void decompressFileFromBinaryByWord(String compressedFilePath, String outputFilePath) throws IOException {
         long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
 
@@ -126,7 +135,11 @@ public class HuffmanEncoderWord {
         System.out.println("Tempo gasto na descompressão por palavra: " + (endTime - startTime) + " ms");
     }
 
-    // Construir a árvore de Huffman por palavra
+    /**
+     * Descrição: Constrói a árvore de Huffman com base nas frequências das palavras de um texto.
+     * Pré-condições: O mapa de frequências deve conter as palavras e suas frequências.
+     * Pós-condições: Retorna a raiz da árvore de Huffman construída.
+     */
     private HuffmanNode buildHuffmanTreeWord(Map<String, Integer> frequencyMap) {
         PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>(new HuffmanComparator());
 
@@ -149,7 +162,11 @@ public class HuffmanEncoderWord {
         return priorityQueue.poll();
     }
 
-    // Construir os códigos de Huffman por palavra
+    /**
+     * Descrição: Constrói os códigos de Huffman para cada palavra da árvore de Huffman.
+     * Pré-condições: A árvore de Huffman deve estar construída corretamente.
+     * Pós-condições: Os códigos de Huffman são armazenados nos mapas `huffmanCodeMapWord` e `reverseHuffmanCodeMapWord`.
+     */
     private void buildHuffmanCodeWord(HuffmanNode root, String code) {
         if (root == null) {
             return;
@@ -165,7 +182,11 @@ public class HuffmanEncoderWord {
         buildHuffmanCodeWord(root.right, code + "1");
     }
 
-    // Método auxiliar para escrever os bits no arquivo binário
+    /**
+     * Descrição: Escreve a representação binária do texto codificado no arquivo binário.
+     * Pré-condições: O texto já deve estar codificado em uma sequência de bits.
+     * Pós-condições: A sequência de bits é convertida em bytes e gravada no arquivo binário.
+     */
     private void writeBits(DataOutputStream dataOut, StringBuilder encodedText) throws IOException {
         BitSet bitSet = new BitSet(encodedText.length());
         for (int i = 0; i < encodedText.length(); i++) {

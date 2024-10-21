@@ -6,7 +6,11 @@ public class HuffmanEncoderChar {
     private Map<Character, String> huffmanCodeMapChar = new HashMap<>();
     private Map<String, Character> reverseHuffmanCodeMapChar = new HashMap<>();
 
-    // Compressão por caractere
+    /**
+     * Descrição: Comprime um arquivo de texto codificando seus caracteres usando a codificação de Huffman e salva o resultado em um arquivo binário.
+     * Pré-condições: O arquivo de entrada deve ser um arquivo de texto existente e legível.
+     * Pós-condições: Um arquivo binário compactado será gerado com a codificação de Huffman por caractere.
+     */
     public void compressFileToBinaryByChar(String inputFilePath, String outputFilePath) throws IOException {
         long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
         Map<Character, Integer> frequencyMapChar = new HashMap<>();
@@ -53,7 +57,11 @@ public class HuffmanEncoderChar {
         System.out.println("Tempo gasto na compressão por caractere: " + (endTime - startTime) + " ms");
     }
 
-    // Descompressão por caractere
+    /**
+     * Descrição: Descomprime um arquivo binário previamente compactado por caracteres usando a codificação de Huffman e restaura o texto original.
+     * Pré-condições: O arquivo compactado deve existir e ter sido gerado utilizando a compressão por caractere.
+     * Pós-condições: Um arquivo de texto descompactado será gerado.
+     */
     public void decompressFileFromBinaryByChar(String compressedFilePath, String outputFilePath) throws IOException {
         long startTime = System.currentTimeMillis();  // Iniciar medição de tempo
         try (DataInputStream dataIn = new DataInputStream(new FileInputStream(compressedFilePath));
@@ -92,7 +100,11 @@ public class HuffmanEncoderChar {
         System.out.println("Tempo gasto na descompressão por caractere: " + (endTime - startTime) + " ms");
     }
 
-    // Construir a árvore de Huffman por caractere
+    /**
+     * Descrição: Constrói a árvore de Huffman com base nas frequências dos caracteres de um texto.
+     * Pré-condições: O mapa de frequências deve conter os caracteres e suas frequências.
+     * Pós-condições: Retorna a raiz da árvore de Huffman construída.
+     */
     private HuffmanNode buildHuffmanTreeChar(Map<Character, Integer> frequencyMap) {
         PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>(new HuffmanComparator());
 
@@ -115,7 +127,11 @@ public class HuffmanEncoderChar {
         return priorityQueue.poll();
     }
 
-    // Construir os códigos de Huffman por caractere
+    /**
+     * Descrição: Constrói os códigos de Huffman para cada caractere da árvore de Huffman.
+     * Pré-condições: A árvore de Huffman deve estar construída corretamente.
+     * Pós-condições: Os códigos de Huffman são armazenados nos mapas `huffmanCodeMapChar` e `reverseHuffmanCodeMapChar`.
+     */
     private void buildHuffmanCodeChar(HuffmanNode root, String code) {
         if (root == null) {
             return;
@@ -131,7 +147,11 @@ public class HuffmanEncoderChar {
         buildHuffmanCodeChar(root.right, code + "1");
     }
 
-    // Método auxiliar para escrever os bits no arquivo binário
+    /**
+     * Descrição: Escreve a representação binária do texto codificado no arquivo binário.
+     * Pré-condições: O texto já deve estar codificado em uma sequência de bits.
+     * Pós-condições: A sequência de bits é convertida em bytes e gravada no arquivo binário.
+     */
     private void writeBits(DataOutputStream dataOut, StringBuilder encodedText) throws IOException {
         BitSet bitSet = new BitSet(encodedText.length());
         for (int i = 0; i < encodedText.length(); i++) {
